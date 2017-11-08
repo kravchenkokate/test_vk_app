@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Test VK App</string>
+    <integer name="com_vk_sdk_AppId">6250499</integer>
+
+    <string name="vk_sign_in">Войти в аккаунт VK</string>
+    <string name="authorization_failed">Авторизация не пройдена!</string>
+
 </resources>
