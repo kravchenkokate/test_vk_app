@@ -64,7 +64,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     }
 
     public void updateAnswers(List<Item> items) {
-
+        //TODO show in activity
         /*mVideoList.clear();
         for(Item item : items) {
             mVideoList.addAll(item.getVideo());

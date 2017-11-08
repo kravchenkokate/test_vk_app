@@ -6,16 +6,20 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.testvkapp.model.Item;
 import com.example.testvkapp.model.Video;
 import com.example.testvkapp.model.VkResponse;
 import com.example.testvkapp.rest.ApiUtils;
 import com.example.testvkapp.rest.LoadManager;
+import com.google.gson.internal.LinkedTreeMap;
 import com.vk.sdk.VKSdk;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,17 +78,26 @@ public class VideoListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<VkResponse> call, Response<VkResponse> response) {
 
-                if(response.isSuccessful()) {
-                    mAdapter.updateAnswers(response.body().getItems());
-                }else {
-                    int statusCode  = response.code();
+                if (response.isSuccessful()) {
+                    VkResponse body = response.body();
+                    List<Object> item = body.getResponseItems().getItems().get(0).getVideo();
+                    Double count = (Double) item.get(0);
+                    Log.i("count of items", String.valueOf(count));
+                    for (int i = 1; i < item.size(); i++) {
+                        Log.i("title=", (String) ((LinkedTreeMap)item.get(i)).get("title"));
+                    }
+                    //todo show items in activity. No time for this.
+                    mAdapter.updateAnswers(body.getResponseItems().getItems());
+                } else {
+                    int statusCode = response.code();
                     // handle request errors depending on status code
+                    throw new Error("statusCode" + statusCode);
                 }
             }
 
             @Override
             public void onFailure(Call<VkResponse> call, Throwable t) {
-
+                throw new Error(t);
             }
         });
 
