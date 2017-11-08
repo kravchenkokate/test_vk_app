@@ -4,5 +4,6 @@
 
     <string name="vk_sign_in">Войти в аккаунт VK</string>
     <string name="authorization_failed">Авторизация не пройдена!</string>
+    <string name="logout">Выйти</string>
 
 </resources>
