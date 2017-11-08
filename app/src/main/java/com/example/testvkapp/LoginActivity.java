@@ -6,12 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
+
+import java.time.Duration;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -51,12 +54,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResult(VKAccessToken res) {
-
-                new AlertDialog.Builder(getApplicationContext())
-                        .setTitle("User passed Authorization")
-                        .setMessage("Ok!")
-                        .setPositiveButton("OK", null)
-                        .show();
+                Toast.makeText(getApplicationContext(), "OK!", Toast.LENGTH_LONG).show();
             }
 
             @Override
