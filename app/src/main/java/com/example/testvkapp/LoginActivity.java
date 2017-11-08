@@ -17,9 +17,12 @@ import com.vk.sdk.api.VKError;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String[] scopes = new String[]{
+            VKScope.FRIENDS,
             VKScope.WALL,
             VKScope.VIDEO,
-            VKScope.NOHTTPS
+            VKScope.PHOTOS,
+            VKScope.MESSAGES,
+            VKScope.DOCS
     };
 
     @Override
@@ -48,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 Intent intent = new Intent(getApplicationContext(), VideoListActivity.class);
+                intent.putExtra("access_token", res.accessToken);
                 startActivity(intent);
             }
 
