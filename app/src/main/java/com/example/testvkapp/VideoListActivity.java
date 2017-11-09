@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.testvkapp.model.Item;
 import com.example.testvkapp.model.Video;
 import com.example.testvkapp.model.VkResponse;
 import com.example.testvkapp.rest.ApiUtils;
@@ -74,9 +75,7 @@ public class VideoListActivity extends AppCompatActivity {
             public void onResponse(Call<VkResponse> call, Response<VkResponse> response) {
 
                 if (response.isSuccessful()) {
-                    VkResponse body = response.body();
-                    List<Object> videos = body.getResponseItems().getItems().get(0).getVideo();
-                    showVideoList(videos);
+                    showVideoList(response.body().getResponseItems().getItems());
                 } else {
                     int statusCode = response.code();
                     // TODO handle request errors depending on status code
@@ -90,18 +89,21 @@ public class VideoListActivity extends AppCompatActivity {
         });
     }
 
-    private void showVideoList(List<Object> response) {
+    private void showVideoList(List<Item> responseItems) {
 
         List<Video> videoList = new ArrayList<>();
 
-        for (int i = 1; i < response.size(); i++) {
-            LinkedTreeMap item = (LinkedTreeMap)response.get(i);
-            Video video = new Video();
-            video.setId(((Double)item.get("vid")).intValue());
-            video.setTitle((String)item.get("title"));
-            video.setDuration(((Double)item.get("duration")).intValue());
-            video.setImage((String)item.get("image"));
-            videoList.add(video);
+        for(Item item : responseItems) {
+            List<Object> videos = item.getVideo();
+            for (int i = 1; i < videos.size(); i++) {
+                LinkedTreeMap videoItem = (LinkedTreeMap) videos.get(i);
+                Video video = new Video();
+                video.setId(((Double) videoItem.get("vid")).intValue());
+                video.setTitle((String) videoItem.get("title"));
+                video.setDuration(((Double) videoItem.get("duration")).intValue());
+                video.setImage((String) videoItem.get("image"));
+                videoList.add(video);
+            }
         }
 
         mAdapter.updateList(videoList);
