@@ -3,14 +3,11 @@ package com.example.testvkapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.testvkapp.model.Item;
 import com.example.testvkapp.model.Video;
 import com.example.testvkapp.model.VkResponse;
 import com.example.testvkapp.rest.ApiUtils;
@@ -39,14 +36,11 @@ public class VideoListActivity extends AppCompatActivity {
 
         mLoadManager = ApiUtils.getLoadManager();
         mRecyclerView = findViewById(R.id.recyclerView);
-        mAdapter = new VideoAdapter(new ArrayList<Video>(0));
+        mAdapter = new VideoAdapter(new ArrayList<Video>(0), this);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setHasFixedSize(true);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(itemDecoration);
 
         loadVideo();
     }
@@ -75,29 +69,42 @@ public class VideoListActivity extends AppCompatActivity {
 
         String accessToken = getIntent().getStringExtra("access_token");
         mLoadManager.getFeeds("video", accessToken).enqueue(new Callback<VkResponse>() {
+
             @Override
             public void onResponse(Call<VkResponse> call, Response<VkResponse> response) {
 
                 if (response.isSuccessful()) {
                     VkResponse body = response.body();
-                    List<Object> item = body.getResponseItems().getItems().get(0).getVideo();
-                    Double count = (Double) item.get(0);
-                    Log.i("count of items", String.valueOf(count));
-                    for (int i = 1; i < item.size(); i++) {
-                        Log.i("title=", (String) ((LinkedTreeMap)item.get(i)).get("title"));
-                    }
-                    //todo show items in activity. No time for this.
-                    mAdapter.updateAnswers(body.getResponseItems().getItems());
+                    List<Object> videos = body.getResponseItems().getItems().get(0).getVideo();
+                    showVideoList(videos);
                 } else {
                     int statusCode = response.code();
-                    // handle request errors depending on status code
+                    // TODO handle request errors depending on status code
                 }
             }
 
             @Override
             public void onFailure(Call<VkResponse> call, Throwable t) {
-
+                //TODO handle failure
             }
         });
     }
+
+    private void showVideoList(List<Object> response) {
+
+        List<Video> videoList = new ArrayList<>();
+
+        for (int i = 1; i < response.size(); i++) {
+            LinkedTreeMap item = (LinkedTreeMap)response.get(i);
+            Video video = new Video();
+            video.setId(((Double)item.get("vid")).intValue());
+            video.setTitle((String)item.get("title"));
+            video.setDuration(((Double)item.get("duration")).intValue());
+            video.setImage((String)item.get("image"));
+            videoList.add(video);
+        }
+
+        mAdapter.updateList(videoList);
+    }
+
 }
