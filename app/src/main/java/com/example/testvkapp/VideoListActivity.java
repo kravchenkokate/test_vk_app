@@ -91,15 +91,13 @@ public class VideoListActivity extends AppCompatActivity {
                 } else {
                     int statusCode = response.code();
                     // handle request errors depending on status code
-                    throw new Error("statusCode" + statusCode);
                 }
             }
 
             @Override
             public void onFailure(Call<VkResponse> call, Throwable t) {
-                throw new Error(t);
+
             }
         });
-
     }
 }
