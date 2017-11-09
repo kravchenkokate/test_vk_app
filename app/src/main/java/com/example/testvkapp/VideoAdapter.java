@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.testvkapp.model.Video;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -55,8 +57,14 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     public void onBindViewHolder(VideoAdapter.ViewHolder viewHolder, int i) {
 
         Video video = mVideoList.get(i);
+
         viewHolder.mTitle.setText(video.getTitle());
-        viewHolder.mDuration.setText(video.getDuration().toString());
+
+        int sec = video.getDuration();
+        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+        String duration = sdf.format(new Date(sec*1000));
+        viewHolder.mDuration.setText(duration);
+
         Glide.with(mContext).load(video.getImage()).override(200, 200).into(viewHolder.mImage);
     }
 
